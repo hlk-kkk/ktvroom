@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hlk.ktvroom.dao.GoodsstockMapper">
+    <resultMap id="BaseResultMap" type="com.hlk.ktvroom.entity.Goodsstock">
+        <id column="goodsstockid" property="goodsstockid" jdbcType="INTEGER"/>
+        <result column="goodsnum" property="goodsnum" jdbcType="INTEGER"/>
+        <result column="goodsinprice" property="goodsinprice" jdbcType="INTEGER"/>
+        <result column="goodsoutprice" property="goodsoutprice" jdbcType="INTEGER"/>
+        <association property="goods" javaType="com.hlk.ktvroom.entity.Goods">
+            <id column="goodsid" property="goodsid" jdbcType="INTEGER"/>
+            <result column="goodsname" property="goodsname" jdbcType="VARCHAR"/>
+            <result column="delfag" property="delfag" jdbcType="INTEGER"/>
+            <result column="goodsprice" property="goodsprice" jdbcType="DECIMAL"/>
+            <association property="goodstype" javaType="com.hlk.ktvroom.entity.Goodstype">
+                <id column="goodstypeid" property="goodstypeid" jdbcType="INTEGER"/>
+                <result column="goodstypename" property="goodsname" jdbcType="VARCHAR"/>
+            </association>
+        </association>
+    </resultMap>
+    <sql id="Base_Column_List">
+        s
+        .
+        goodsstockid
+        ,
+        s
+        .
+        goodsnum,
+        s
+        .
+        goodsinprice,
+        s
+        .
+        goodsoutprice,
+        g
+        .
+        goodsid,
+        g
+        .
+        goodsname,
+        g
+        .
+        delfag,
+        g
+        .
+        goodsprice,
+        p
+        .
+        goodstypeid,
+        p
+        .
+        goodsname
+        goodstypename
+    </sql>
+    <select id="selectAll" resultMap="BaseResultMap" parameterType="com.hlk.ktvroom.entity.Goodsstock">
+        select
+        <include refid="Base_Column_List"/>
+        from k_goodsstock s left join k_goods g on s.goodsid=g.goodsid left join k_goodstype p on
+        s.goodstypeid=p.goodstypeid
+    </select>
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+        select
+        <include refid="Base_Column_List"/>
+        from k_goodsstock s left join k_goods g on s.goodsid=g.goodsid left join k_goodstype p on
+        s.goodstypeid=p.goodstypeid
+        where
+        s.goodsstockid = #{goodsstockid,jdbcType=INTEGER}
+    </select>
+    <select id="selectByPrimaryKey1" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+        select
+        <include refid="Base_Column_List"/>
+        from k_goodsstock s left join k_goods g on s.goodsid=g.goodsid left join k_goodstype p on
+        s.goodstypeid=p.goodstypeid
+        where
+        s.goodsid = #{goodsid}
+
+
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+        delete
+        from k_goodsstock
+        where goodsstockid = #{goodsstockid,jdbcType=INTEGER}
+    </delete>
+    <insert id="insert" parameterType="com.hlk.ktvroom.entity.Goodsstock">
+
+        insert into k_goodsstock (goodsstockid, goodsid, goodstypeid,
+                                  goodsnum, goodsinprice, goodsoutprice)
+        values (#{goodsstockid,jdbcType=INTEGER}, #{goods.goodsid,jdbcType=INTEGER},
+                #{goods.goodstype.goodstypeid,jdbcType=INTEGER},
+                #{goodsnum,jdbcType=INTEGER}, #{goodsinprice,jdbcType=INTEGER}, #{goodsoutprice,jdbcType=INTEGER})
+    </insert>
+    <insert id="insertSelective" parameterType="com.hlk.ktvroom.entity.Goodsstock">
+        insert into k_goodsstock
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="goodsstockid != null">
+                goodsstockid,
+            </if>
+            <if test="goodsid != null">
+                goodsid,
+            </if>
+            <if test="goodstypeid != null">
+                goodstypeid,
+            </if>
+            <if test="goodsnum != null">
+                goodsnum,
+            </if>
+            <if test="goodsinprice != null">
+                goodsinprice,
+            </if>
+            <if test="goodsoutprice != null">
+                goodsoutprice,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="goodsstockid != null">
+                #{goodsstockid,jdbcType=INTEGER},
+            </if>
+            <if test="goodsid != null">
+                #{goodsid,jdbcType=INTEGER},
+            </if>
+            <if test="goodstypeid != null">
+                #{goodstypeid,jdbcType=INTEGER},
+            </if>
+            <if test="goodsnum != null">
+                #{goodsnum,jdbcType=INTEGER},
+            </if>
+            <if test="goodsinprice != null">
+                #{goodsinprice,jdbcType=INTEGER},
+            </if>
+            <if test="goodsoutprice != null">
+                #{goodsoutprice,jdbcType=INTEGER},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.hlk.ktvroom.entity.Goodsstock">
+        update k_goodsstock
+        <set>
+            <if test="goods.goodstype.goodstypeid!= null">
+                goodstypeid = #{goods.goodstype.goodstypeid,jdbcType=INTEGER},
+            </if>
+            <if test="goodsnum != null">
+                goodsnum = #{goodsnum,jdbcType=INTEGER},
+            </if>
+            <if test="goodsinprice != null">
+                goodsinprice = #{goodsinprice,jdbcType=INTEGER},
+            </if>
+            <if test="goodsoutprice != null">
+                goodsoutprice = #{goodsoutprice,jdbcType=INTEGER},
+            </if>
+        </set>
+        where goodsstockid = #{goodsstockid,jdbcType=INTEGER}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.hlk.ktvroom.entity.Goodsstock">
+        update k_goodsstock
+        set goodsid       = #{goodsid,jdbcType=INTEGER},
+            goodstypeid   = #{goodstypeid,jdbcType=INTEGER},
+            goodsnum      = #{goodsnum,jdbcType=INTEGER},
+            goodsinprice  = #{goodsinprice,jdbcType=INTEGER},
+            goodsoutprice = #{goodsoutprice,jdbcType=INTEGER}
+        where goodsstockid = #{goodsstockid,jdbcType=INTEGER}
+    </update>
+    <delete id="removes">
+        delete k_goodsstock, k_goods from k_goodsstock LEFT JOIN k_goods ON k_goodsstock.goodsid = k_goods.goodsid where
+        k_goodsstock.goodsstockid in
+        <foreach collection="ids" close=")" item="id" separator="," open="(">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

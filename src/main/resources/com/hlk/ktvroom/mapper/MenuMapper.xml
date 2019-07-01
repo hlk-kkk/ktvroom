@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper SYSTEM "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hlk.ktvroom.dao.MenuDao">
+    <resultMap type="Menu" id="m">
+        <id column="id" property="id"/>
+        <result property="title" column="title"/>
+        <result property="iconCls" column="iconCls"/>
+        <result property="href" column="href"/>
+        <collection property="children" ofType="Menu">
+            <id column="cid" property="id"/>
+            <result property="title" column="ctitle"/>
+            <result property="iconCls" column="ciconCls"/>
+            <result property="href" column="chref"/>
+        </collection>
+    </resultMap>
+    <select id="selectMenu" resultMap="m" parameterType="com.hlk.ktvroom.entity.Menu">
+        select c1.id,c1.title,c1.iconCls,c1.href,c2.id cid,c2.title ctitle,c2.href chref,c2.iconCls ciconCls from k_menu
+        c1 left join k_menu c2 on c1.id=c2.parent_id
+        <where>
+            <if test="id!=null and !id.equals('')">
+                c1.id=5
+            </if>
+            and c1.parent_id is null
+        </where>
+    </select>
+</mapper>

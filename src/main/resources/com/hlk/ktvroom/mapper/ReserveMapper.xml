@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hlk.ktvroom.dao.ReserveMapper">
+    <resultMap id="BaseResultMap" type="com.hlk.ktvroom.entity.Reserve">
+        <id column="resid" property="resid" jdbcType="INTEGER"/>
+        <result column="resname" property="resname" jdbcType="VARCHAR"/>
+        <result column="resphone" property="resphone" jdbcType="VARCHAR"/>
+        <result column="delflag" property="delflag" jdbcType="INTEGER"/>
+        <result column="resarrtime" property="resarrtime" jdbcType="TIMESTAMP"/>
+        <association property="roomtype" javaType="com.hlk.ktvroom.entity.Roomtype">
+            <id column="roomtypeid" property="roomtypeid" jdbcType="INTEGER"/>
+            <result column="roomtype" property="roomtype" jdbcType="VARCHAR"/>
+            <result column="roommoney" property="roommoney" jdbcType="VARCHAR"/>
+            <result column="roomremark" property="roomremark" jdbcType="VARCHAR"/>
+            <result column="roomminmoney" property="roomminmoney" jdbcType="VARCHAR"/>
+        </association>
+    </resultMap>
+    <sql id="Base_Column_List">
+        k
+        .
+        resid
+        ,
+        k
+        .
+        resname,
+        k
+        .
+        resphone,
+        k
+        .
+        delflag,
+        k
+        .
+        resarrtime,
+        t
+        .
+        roomtype
+    </sql>
+    <select id="selectAll" resultMap="BaseResultMap" parameterType="com.hlk.ktvroom.entity.Reserve">
+        select
+        <include refid="Base_Column_List"/>
+        from k_reserve k left join k_roomtype t on k.roomtypeid=t.roomtypeid
+        <where>
+            <if test="resname!=null and !resname.equals('')">
+                resname like '%${resname}%'or delflag like '%${resname}'
+            </if>
+            <if test="delflag!=null and !delflag.equals('')">
+                delflag = #{delflag}
+            </if>
+        </where>
+        order by delflag asc
+    </select>
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+        select
+        <include refid="Base_Column_List"/>
+        from k_reserve
+        where resid = #{resid,jdbcType=INTEGER}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+        delete
+        from k_reserve
+        where resid = #{resid,jdbcType=INTEGER}
+    </delete>
+    <insert id="insert" parameterType="com.hlk.ktvroom.entity.Reserve">
+        insert into k_reserve (resid, resname, resphone,
+                               delflag, roomtypeid, resarrtime)
+        values (#{resid,jdbcType=INTEGER}, #{resname,jdbcType=VARCHAR}, #{resphone,jdbcType=VARCHAR},
+                #{delflag,jdbcType=INTEGER}, #{roomtype.roomtypeid,jdbcType=INTEGER}, #{resarrtime,jdbcType=TIMESTAMP})
+    </insert>
+    <insert id="insertSelective" parameterType="com.hlk.ktvroom.entity.Reserve">
+        insert into k_reserve
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="resid != null">
+                resid,
+            </if>
+            <if test="resname != null">
+                resname,
+            </if>
+            <if test="resphone != null">
+                resphone,
+            </if>
+            <if test="delflag != null">
+                delflag,
+            </if>
+            <if test="roomtypeid != null">
+                roomtypeid,
+            </if>
+            <if test="resarrtime != null">
+                resarrtime,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="resid != null">
+                #{resid,jdbcType=INTEGER},
+            </if>
+            <if test="resname != null">
+                #{resname,jdbcType=VARCHAR},
+            </if>
+            <if test="resphone != null">
+                #{resphone,jdbcType=VARCHAR},
+            </if>
+            <if test="delflag != null">
+                #{delflag,jdbcType=INTEGER},
+            </if>
+            <if test="roomtypeid != null">
+                #{roomtypeid,jdbcType=INTEGER},
+            </if>
+            <if test="resarrtime != null">
+                #{resarrtime,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.hlk.ktvroom.entity.Reserve">
+        update k_reserve
+        <set>
+            <if test="resname != null">
+                resname = #{resname,jdbcType=VARCHAR},
+            </if>
+            <if test="resphone != null">
+                resphone = #{resphone,jdbcType=VARCHAR},
+            </if>
+            <if test="delflag != null">
+                delflag = #{delflag,jdbcType=INTEGER},
+            </if>
+            <if test="roomtype!=null">
+                <if test="roomtype.roomtypeid != null">
+                    roomtypeid = #{roomtype.roomtypeid,jdbcType=INTEGER},
+                </if>
+            </if>
+            <if test="resarrtime != null">
+                resarrtime = #{resarrtime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where resid = #{resid,jdbcType=INTEGER}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.hlk.ktvroom.entity.Reserve">
+        update k_reserve
+        set resname    = #{resname,jdbcType=VARCHAR},
+            resphone   = #{resphone,jdbcType=VARCHAR},
+            delflag    = #{delflag,jdbcType=INTEGER},
+            roomtypeid = #{roomtypeid,jdbcType=INTEGER},
+            resarrtime = #{resarrtime,jdbcType=TIMESTAMP}
+        where resid = #{resid,jdbcType=INTEGER}
+    </update>
+    <delete id="removes">
+        delete from k_reserve where resid in
+        <foreach collection="ids" close=")" item="id" separator="," open="(">
+            #{id}
+        </foreach>
+    </delete>
+    <update id="modify" parameterType="com.hlk.ktvroom.entity.Reserve">
+        update k_reserve
+        set delflag=#{delflag}
+        where resid = #{resid}
+    </update>
+</mapper>

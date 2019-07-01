@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hlk.ktvroom.dao.OrderMapper">
+    <resultMap id="BaseResultMap" type="com.hlk.ktvroom.entity.Order">
+        <id column="orderid" property="orderid" jdbcType="INTEGER"/>
+        <result column="ordermoney" property="ordermoney" jdbcType="INTEGER"/>
+        <result column="discount" property="discount" jdbcType="VARCHAR"/>
+        <result column="delflag" property="delflag" jdbcType="INTEGER"/>
+        <result column="begintime" property="begintime" jdbcType="TIMESTAMP"/>
+        <result column="endtime" property="endtime" jdbcType="TIMESTAMP"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        orderid
+        ,
+        ordermoney,
+        discount,
+        delflag,
+        begintime,
+        endtime
+    </sql>
+    <select id="selectorder" parameterType="com.hlk.ktvroom.entity.Room" resultType="java.lang.Integer">
+        select r.orderid
+        from k_roomorder r
+                 left join k_order o on r.orderid = o.orderid
+        where r.roomid = #{roomid}
+          and o.delflag = 0
+    </select>
+    <select id="selectAll" resultMap="BaseResultMap" parameterType="com.hlk.ktvroom.entity.Order">
+        select
+        <include refid="Base_Column_List"/>
+        from k_order
+        <where>
+            <if test="goodsname!=null and !goodsname.equals('')">
+                goodsname like '%${goodsname}%';
+            </if>
+        </where>
+    </select>
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+        select
+        <include refid="Base_Column_List"/>
+        from k_order
+        where orderid = #{orderid,jdbcType=INTEGER}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+        delete
+        from k_order
+        where orderid = #{orderid,jdbcType=INTEGER}
+    </delete>
+    <insert id="insert" parameterType="com.hlk.ktvroom.entity.Order">
+        insert into k_order (orderid, ordermoney, discount,
+                             delflag, begintime, endtime)
+        values (null, #{ordermoney,jdbcType=INTEGER}, #{discount,jdbcType=VARCHAR},
+                #{delflag,jdbcType=INTEGER}, #{begintime,jdbcType=TIMESTAMP}, #{endtime,jdbcType=TIMESTAMP})
+    </insert>
+    <insert id="insertSelective" parameterType="com.hlk.ktvroom.entity.Order">
+        insert into k_order
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="orderid != null">
+                orderid,
+            </if>
+            <if test="ordermoney != null">
+                ordermoney,
+            </if>
+            <if test="discount != null">
+                discount,
+            </if>
+            <if test="delflag != null">
+                delflag,
+            </if>
+            <if test="begintime != null">
+                begintime,
+            </if>
+            <if test="endtime != null">
+                endtime,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="orderid != null">
+                #{orderid,jdbcType=INTEGER},
+            </if>
+            <if test="ordermoney != null">
+                #{ordermoney,jdbcType=INTEGER},
+            </if>
+            <if test="discount != null">
+                #{discount,jdbcType=VARCHAR},
+            </if>
+            <if test="delflag != null">
+                #{delflag,jdbcType=INTEGER},
+            </if>
+            <if test="begintime != null">
+                #{begintime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="endtime != null">
+                #{endtime,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.hlk.ktvroom.entity.Order">
+        update k_order
+        <set>
+            <if test="ordermoney != null">
+                ordermoney = #{ordermoney,jdbcType=INTEGER},
+            </if>
+            <if test="discount != null">
+                discount = #{discount,jdbcType=VARCHAR},
+            </if>
+            <if test="delflag != null">
+                delflag = #{delflag,jdbcType=INTEGER},
+            </if>
+            <if test="begintime != null">
+                begintime = #{begintime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="endtime != null">
+                endtime = #{endtime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where orderid = #{orderid,jdbcType=INTEGER}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.hlk.ktvroom.entity.Order">
+        update k_order
+        set ordermoney = #{ordermoney,jdbcType=INTEGER},
+            discount   = #{discount,jdbcType=VARCHAR},
+            delflag    = #{delflag,jdbcType=INTEGER},
+            begintime  = #{begintime,jdbcType=TIMESTAMP},
+            endtime    = #{endtime,jdbcType=TIMESTAMP}
+        where orderid = #{orderid,jdbcType=INTEGER}
+    </update>
+    <select id="selectsqu" resultType="java.lang.Integer">
+        select max(orderid)
+        from k_order
+    </select>
+</mapper>

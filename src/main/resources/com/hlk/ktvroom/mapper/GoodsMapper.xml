@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hlk.ktvroom.dao.GoodsMapper">
+    <resultMap id="BaseResultMap" type="com.hlk.ktvroom.entity.Goods">
+        <id column="goodsid" property="goodsid" jdbcType="INTEGER"/>
+        <result column="goodsname" property="goodsname" jdbcType="VARCHAR"/>
+        <result column="delfag" property="delfag" jdbcType="INTEGER"/>
+        <result column="goodsprice" property="goodsprice" jdbcType="DECIMAL"/>
+        <association property="goodstype" javaType="com.hlk.ktvroom.entity.Goodstype">
+            <id column="goodstypeid" property="goodstypeid" jdbcType="INTEGER"/>
+            <result column="typena" property="goodsname" jdbcType="INTEGER"></result>
+        </association>
+    </resultMap>
+    <sql id="Base_Column_List">
+        g
+        .
+        goodsid
+        ,
+        g
+        .
+        goodsname,
+        t
+        .
+        goodstypeid,
+        t
+        .
+        goodsname
+        typena,
+        g
+        .
+        delfag,
+        g
+        .
+        goodsprice
+    </sql>
+    <select id="selectAll" resultMap="BaseResultMap" parameterType="com.hlk.ktvroom.entity.Goods">
+        select
+        <include refid="Base_Column_List"/>
+        from k_goods g left join k_goodstype t on g.goodstypeid=t.goodstypeid
+        <where>
+            <if test="goodsname!=null and !goodsname.equals('')">
+                goodsname like '%${goodsname}%';
+            </if>
+        </where>
+    </select>
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+        select
+        <include refid="Base_Column_List"/>
+        from k_goods
+        where goodsid = #{goodsid,jdbcType=INTEGER}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+        delete
+        from k_goods
+        where goodsid = #{goodsid,jdbcType=INTEGER}
+    </delete>
+    <insert id="insert" useGeneratedKeys="true" keyProperty="goodsid" parameterType="com.hlk.ktvroom.entity.Goods">
+        insert into k_goods (goodsid, goodsname, goodstypeid,
+                             delfag, goodsprice)
+        values (#{goodsid,jdbcType=INTEGER}, #{goodsname,jdbcType=VARCHAR}, #{goodstype.goodstypeid,jdbcType=INTEGER},
+                #{delfag,jdbcType=INTEGER}, #{goodsprice,jdbcType=DECIMAL})
+    </insert>
+    <insert id="insertSelective" parameterType="com.hlk.ktvroom.entity.Goods">
+        insert into k_goods
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="goodsid != null">
+                goodsid,
+            </if>
+            <if test="goodsname != null">
+                goodsname,
+            </if>
+            <if test="goodstypeid != null">
+                goodstypeid,
+            </if>
+            <if test="delfag != null">
+                delfag,
+            </if>
+            <if test="goodsprice != null">
+                goodsprice,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="goodsid != null">
+                #{goodsid,jdbcType=INTEGER},
+            </if>
+            <if test="goodsname != null">
+                #{goodsname,jdbcType=VARCHAR},
+            </if>
+            <if test="goodstypeid != null">
+                #{goodstypeid,jdbcType=INTEGER},
+            </if>
+            <if test="delfag != null">
+                #{delfag,jdbcType=INTEGER},
+            </if>
+            <if test="goodsprice != null">
+                #{goodsprice,jdbcType=DECIMAL},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.hlk.ktvroom.entity.Goods">
+        update k_goods
+        <set>
+            <if test="goodsname != null">
+                goodsname = #{goodsname,jdbcType=VARCHAR},
+            </if>
+            <if test="goodstype.goodstypeid != null">
+                goodstypeid = #{goodstype.goodstypeid,jdbcType=INTEGER},
+            </if>
+            <if test="delfag != null">
+                delfag = #{delfag,jdbcType=INTEGER},
+            </if>
+            <if test="goodsprice != null">
+                goodsprice = #{goodsprice,jdbcType=DECIMAL},
+            </if>
+        </set>
+        where goodsid = #{goodsid,jdbcType=INTEGER}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.hlk.ktvroom.entity.Goods">
+        update k_goods
+        set goodsname   = #{goodsname,jdbcType=VARCHAR},
+            goodstypeid = #{goodstypeid,jdbcType=INTEGER},
+            delfag      = #{delfag,jdbcType=INTEGER},
+            goodsprice  = #{goodsprice,jdbcType=DECIMAL}
+        where goodsid = #{goodsid,jdbcType=INTEGER}
+    </update>
+    <delete id="removes">
+        delete from k_goods where goodsid in
+        <foreach collection="ids" close=")" item="id" separator="," open="(">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

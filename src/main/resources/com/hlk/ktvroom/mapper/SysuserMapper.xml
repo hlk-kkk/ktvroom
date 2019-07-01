@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hlk.ktvroom.dao.SysuserMapper">
+    <resultMap id="BaseResultMap" type="com.hlk.ktvroom.entity.Sysuser">
+        <id column="sysid" property="sysid" jdbcType="INTEGER"/>
+        <result column="sysname" property="sysname" jdbcType="VARCHAR"/>
+        <result column="syspwd" property="syspwd" jdbcType="VARCHAR"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        sysid
+        ,
+        sysname,
+        syspwd
+    </sql>
+    <select id="selectBySysuser" resultMap="BaseResultMap" parameterType="com.hlk.ktvroom.entity.Sysuser">
+        select
+        <include refid="Base_Column_List"/>
+        from k_sysuser
+        where sysname = #{sysname,jdbcType=INTEGER}
+    </select>
+    <select id="selectAll" resultMap="BaseResultMap" parameterType="com.hlk.ktvroom.entity.Sysuser">
+        select
+        <include refid="Base_Column_List"/>
+        from k_sysuser
+        <where>
+            <if test="sysname!=null and !sysname.equals('')">
+                sysname=#{sysname}
+            </if>
+        </where>
+    </select>
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+        select
+        <include refid="Base_Column_List"/>
+        from k_sysuser
+        where sysword = #{sysword,jdbcType=INTEGER}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+        delete
+        from k_sysuser
+        where sysid = #{sysid,jdbcType=INTEGER}
+    </delete>
+    <insert id="insert" parameterType="com.hlk.ktvroom.entity.Sysuser">
+        insert into k_sysuser (sysid, sysname, syspwd, sysword)
+        values (#{sysid,jdbcType=INTEGER}, #{sysname,jdbcType=VARCHAR}, #{syspwd,jdbcType=VARCHAR},
+                #{sysword,jdbcType=VARCHAR})
+    </insert>
+    <insert id="insertSelective" parameterType="com.hlk.ktvroom.entity.Sysuser">
+        insert into k_sysuser
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="sysid != null">
+                sysid,
+            </if>
+            <if test="sysname != null">
+                sysname,
+            </if>
+            <if test="syspwd != null">
+                syspwd,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="sysid != null">
+                #{sysid,jdbcType=INTEGER},
+            </if>
+            <if test="sysname != null">
+                #{sysname,jdbcType=VARCHAR},
+            </if>
+            <if test="syspwd != null">
+                #{syspwd,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.hlk.ktvroom.entity.Sysuser">
+        update k_sysuser
+        <set>
+            <if test="sysname != null">
+                sysname = #{sysname,jdbcType=VARCHAR},
+            </if>
+            <if test="syspwd != null">
+                syspwd = #{syspwd,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where sysid = #{sysid,jdbcType=INTEGER}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.hlk.ktvroom.entity.Sysuser">
+        update k_sysuser
+        set sysname = #{sysname,jdbcType=VARCHAR},
+            syspwd  = #{syspwd,jdbcType=VARCHAR}
+        where sysid = #{sysid,jdbcType=INTEGER}
+    </update>
+    <delete id="removes">
+        delete from k_sysuser where sysid in
+        <foreach collection="ids" close=")" item="id" separator="," open="(">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

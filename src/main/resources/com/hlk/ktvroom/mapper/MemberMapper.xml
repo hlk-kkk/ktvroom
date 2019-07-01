@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hlk.ktvroom.dao.MemberMapper">
+    <resultMap id="BaseResultMap" type="com.hlk.ktvroom.entity.Member">
+        <id column="memberid" property="memberid" jdbcType="INTEGER"/>
+        <result column="membername" property="membername" jdbcType="VARCHAR"/>
+        <result column="sex" property="sex" jdbcType="INTEGER"/>
+        <result column="memberphone" property="memberphone" jdbcType="VARCHAR"/>
+        <result column="entry_date" property="entryDate" jdbcType="DATE"/>
+        <result column="membernum" property="membernum" jdbcType="VARCHAR"/>
+        <result column="memberintegral" property="memberintegral" jdbcType="INTEGER"/>
+        <result column="delfag" property="delfag" jdbcType="INTEGER"/>
+        <result column="auditingmsg" property="auditingmsg" jdbcType="INTEGER"/>
+        <association property="membertype" javaType="com.hlk.ktvroom.entity.Membertype">
+            <id column="membertypeid" property="membertypeid" jdbcType="INTEGER"/>
+            <result column="memberlevel" property="memberlevel" jdbcType="VARCHAR"/>
+            <result column="memberdiscount" property="memberdiscount" jdbcType="DECIMAL"/>
+            <result column="memberintegral" property="memberintegral" jdbcType="INTEGER"/>
+        </association>
+    </resultMap>
+    <sql id="Base_Column_List">
+        memberid
+        ,
+        membertypeid,
+        membername,
+        sex,
+        memberphone,
+        auditingmsg,
+        entry_date,
+        membernum,
+        memberintegral,
+        delfag
+    </sql>
+    <sql id="Base_Column_List1">
+        m
+        .
+        memberid
+        ,
+        m
+        .
+        membername,
+        m
+        .
+        sex,
+        m
+        .
+        auditingmsg,
+        m
+        .
+        memberphone,
+        m
+        .
+        entry_date,
+        m
+        .
+        membernum,
+        m
+        .
+        memberintegral,
+        m
+        .
+        delfag,
+        t
+        .
+        membertypeid,
+        t
+        .
+        memberlevel,
+        t
+        .
+        memberdiscount,
+        t
+        .
+        memberintegral
+    </sql>
+    <delete id="removes">
+        delete from k_member where memberid in
+        <foreach collection="ids" close=")" item="id" separator="," open="(">
+            #{id}
+        </foreach>
+    </delete>
+    <update id="modify" parameterType="com.hlk.ktvroom.entity.Member">
+        update k_member
+        set delfag=#{delfag}
+        where memberid = #{memberid}
+    </update>
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+        select
+        <include refid="Base_Column_List1"/>
+        from k_member m LEFT JOIN k_membertype t ON m.membertypeid =t.membertypeid
+        where m.memberid = #{memberid,jdbcType=INTEGER}
+    </select>
+    <select id="selectByMember" resultMap="BaseResultMap" parameterType="com.hlk.ktvroom.entity.Member">
+        select
+        <include refid="Base_Column_List1"/>
+        from k_member m LEFT JOIN k_membertype t ON m.membertypeid =t.membertypeid
+        where m.membername = #{membername,jdbcType=INTEGER}
+    </select>
+    <select id="selectAll" resultMap="BaseResultMap" parameterType="com.hlk.ktvroom.entity.Member">
+        select
+        <include refid="Base_Column_List1"/>
+        from k_member m LEFT JOIN k_membertype t ON m.membertypeid =t.membertypeid
+        <where>
+            <if test="membername!=null and !membername.equals('')">
+                membername like '%${membername}%';
+            </if>
+        </where>
+        <where>
+            <if test="delfag!=null and !delfag.equals('')">
+                delfag =#{delfag};
+            </if>
+        </where>
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+        delete
+        from k_member
+        where memberid = #{memberid,jdbcType=INTEGER}
+    </delete>
+    <insert id="insert" parameterType="com.hlk.ktvroom.entity.Member">
+        insert into k_member (memberid, membertypeid, membername,
+                              sex, memberphone, entry_date,
+                              membernum, memberintegral, delfag)
+        values (#{memberid,jdbcType=INTEGER}, #{membertype.membertypeid,jdbcType=INTEGER},
+                #{membername,jdbcType=VARCHAR},
+                #{sex,jdbcType=INTEGER}, #{memberphone,jdbcType=VARCHAR}, #{entryDate,jdbcType=DATE},
+                #{membernum,jdbcType=VARCHAR}, #{memberintegral,jdbcType=INTEGER}, #{delfag,jdbcType=INTEGER})
+    </insert>
+    <insert id="insertSelective" parameterType="com.hlk.ktvroom.entity.Member">
+        insert into k_member
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="memberid != null">
+                memberid,
+            </if>
+            <if test="membertype!= null">
+                membertypeid,
+            </if>
+            <if test="membername != null">
+                membername,
+            </if>
+            <if test="sex != null">
+                sex,
+            </if>
+            <if test="memberphone != null">
+                memberphone,
+            </if>
+            <if test="entryDate != null">
+                entry_date,
+            </if>
+            <if test="membernum != null">
+                membernum,
+            </if>
+            <if test="memberintegral != null">
+                memberintegral,
+            </if>
+            <if test="delfag != null">
+                delfag,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="memberid != null">
+                #{memberid,jdbcType=INTEGER},
+            </if>
+            <if test="membertype!= null">
+                #{membertype.membertypeid,jdbcType=INTEGER},
+            </if>
+            <if test="membername != null">
+                #{membername,jdbcType=VARCHAR},
+            </if>
+            <if test="sex != null">
+                #{sex,jdbcType=INTEGER},
+            </if>
+            <if test="memberphone != null">
+                #{memberphone,jdbcType=VARCHAR},
+            </if>
+            <if test="entryDate != null">
+                #{entryDate,jdbcType=DATE},
+            </if>
+            <if test="membernum != null">
+                #{membernum,jdbcType=VARCHAR},
+            </if>
+            <if test="memberintegral != null">
+                #{memberintegral,jdbcType=INTEGER},
+            </if>
+            <if test="delfag != null">
+                #{delfag,jdbcType=INTEGER},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.hlk.ktvroom.entity.Member">
+        update k_member
+        <set>
+            <if test="membertype != null">
+                membertypeid = #{membertype.membertypeid,jdbcType=VARCHAR},
+            </if>
+            <if test="membername != null">
+                membername = #{membername,jdbcType=VARCHAR},
+            </if>
+            <if test="sex != null">
+                sex = #{sex,jdbcType=INTEGER},
+            </if>
+            <if test="memberphone != null">
+                memberphone = #{memberphone,jdbcType=VARCHAR},
+            </if>
+            <if test="entryDate != null">
+                entry_date = #{entryDate,jdbcType=DATE},
+            </if>
+            <if test="membernum != null">
+                membernum = #{membernum,jdbcType=VARCHAR},
+            </if>
+            <if test="memberintegral != null">
+                memberintegral = #{memberintegral,jdbcType=INTEGER},
+            </if>
+            <if test="delfag != null">
+                delfag = #{delfag,jdbcType=INTEGER},
+            </if>
+        </set>
+        where memberid = #{memberid,jdbcType=INTEGER}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.hlk.ktvroom.entity.Member">
+        update k_member
+        set
+            membername     = #{membername,jdbcType=VARCHAR},
+            sex            = #{sex,jdbcType=INTEGER},
+            memberphone    = #{memberphone,jdbcType=VARCHAR},
+            entry_date     = #{entryDate,jdbcType=DATE},
+            membernum      = #{membernum,jdbcType=VARCHAR},
+            memberintegral = #{memberintegral,jdbcType=INTEGER},
+            delfag         = #{delfag,jdbcType=INTEGER}
+        where memberid = #{memberid,jdbcType=INTEGER}
+    </update>
+</mapper>
